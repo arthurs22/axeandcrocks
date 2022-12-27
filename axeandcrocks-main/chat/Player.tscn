@@ -1,0 +1,215 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://img/sprites.png" type="Texture" id=2]
+[ext_resource path="res://scripts/Playerscr.gd" type="Script" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 166, 306, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 249, 306, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 332, 306, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 415, 306, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 153, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 83, 153, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 415, 153, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=8]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=9]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 83, 0, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=10]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 166, 0, 83, 153 )
+
+[sub_resource type="AtlasTexture" id=11]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 249, 0, 83, 153 )
+
+[sub_resource type="SpriteFrames" id=12]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+"loop": true,
+"name": "attack",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ) ],
+"loop": true,
+"name": "run",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=13]
+radius = 24.0
+height = 60.0
+
+[sub_resource type="GDScript" id=14]
+script/source = "# Player script
+#TODO:
+#ATTACK AND DEFEND LOGGIC
+#INTEGRATION WITH TURNS LOGIC (WORLD.GD) AND ACTION LOGIC (PLAYER.GD)
+extends KinematicBody2D
+
+
+signal move_right
+signal move_left
+signal attack
+signal defend
+# Enum to track the player's current action
+
+enum PlayerAction {
+	NONE,
+	MOVE_RIGHT,
+	MOVE_LEFT,
+	ATTACK,
+	DEFEND
+}
+
+
+
+var button_name \"merda\"
+
+#MOVE RIGHT
+func _on_Button1_pressed():
+	button_name = \"Move_Right\"
+
+#MOVE LEFT
+func _on_Button2_pressed():
+	button_name = \"Move_left\"
+
+#ATTACK
+func _on_Button3_pressed():
+	button_name = \"Attack\"
+
+#DEFFEND
+func _on_Button4_pressed():
+	button_name = \"Defend\"
+
+# Function to handle input from the buttons
+func button_input(button_name):
+	# Set the current action based on the button pressed
+	if _on_Button1_pressed() == \"Move_Right\":
+		emit_signal(\"move_right\")
+	elif _on_Button2_pressed() == \"Move_left\":
+		emit_signal(\"move_left\")
+	elif _on_Button3_pressed() == \"Attack\":
+		emit_signal(\"attack\")
+	elif _on_Button4_pressed() == \"Defend\":
+		emit_signal(\"defend\")
+
+# Function to execute the player's current action MUDAR ISSO PARA WORLD.GD
+#func take_action():
+#	# Check the player's current action and perform the corresponding action
+#	if current_action == PlayerAction.MOVE_RIGHT:
+#		move_and_slide(Vector2(move_speed, 0))
+#	elif current_action == PlayerAction.MOVE_LEFT:
+#		move_and_slide(Vector2(-move_speed, 0))
+#	elif current_action == PlayerAction.ATTACK:
+#		# Attack logic goes here
+#		get_node(\"Sprite\").play(attack_animation)
+#
+#	elif current_action == PlayerAction.DEFEND:
+#		print(\"jogador arregou\")
+#
+#	# Reset the current action to NONE after taking the action
+#	current_action = PlayerAction.NONE
+
+## Function to update the player each frame TER A CHAMADA DO TAKE ACTION NO WORLD
+#func _physics_process(delta):
+#	# Check if the player has a valid action selected
+#	if current_action != PlayerAction.NONE:
+#		take_action()
+
+
+
+
+"
+
+[node name="Player" type="Node2D"]
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 12 )
+
+[node name="KinematicBody2D" type="CollisionShape2D" parent="."]
+position = Vector2( 12, -16 )
+shape = SubResource( 13 )
+script = SubResource( 14 )
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Button1" type="Button" parent="Control"]
+margin_left = 50.0
+margin_top = -25.0
+margin_right = 80.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( -244, -26 )
+text = "R"
+
+[node name="Button2" type="Button" parent="Control"]
+margin_left = -58.0
+margin_top = -23.0
+margin_right = -35.0
+margin_bottom = -3.0
+text = "L"
+
+[node name="Button3" type="Button" parent="Control"]
+margin_left = 50.0
+margin_top = -70.0
+margin_right = 76.0
+margin_bottom = -50.0
+text = "A"
+
+[node name="Button4" type="Button" parent="Control"]
+margin_left = -59.0
+margin_top = -70.0
+margin_right = -35.0
+margin_bottom = -50.0
+text = "D"
+
+[connection signal="pressed" from="Control/Button1" to="KinematicBody2D" method="_on_Button1_pressed"]
+[connection signal="pressed" from="Control/Button2" to="KinematicBody2D" method="_on_Button2_pressed"]
+[connection signal="pressed" from="Control/Button3" to="KinematicBody2D" method="_on_Button3_pressed"]
+[connection signal="pressed" from="Control/Button4" to="KinematicBody2D" method="_on_Button4_pressed"]
